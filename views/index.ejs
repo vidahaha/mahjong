@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/socket.io.js"></script>
+    <script>
+      window.onload = function () {
+
+        
+        var submit = document.getElementById("b-submit")
+
+        var myajax = function (type, url, data, fn) {
+          var xmlhttp; 
+          if ( window.XMLHttpRequest ) {
+            xmlhttp = new XMLHttpRequest();
+          } else {
+            xmlhttp = new ActiveXObject('Microsoft.XMLHTTP')
+          }
+
+          xmlhttp.open(type, url, true);
+          xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+          xmlhttp.send(' username = vida &password = 123 ');
+
+          xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              //console.log(xmlhttp.responseText);
+              fn( xmlhttp.responseText );
+            }
+          }
+        }
+
+        submit.onclick = function () {
+          var username = document.getElementById("in-username").value;
+          var password = document.getElementById("in-password").value;
+          myajax('post', '', {
+          'username': username,
+          'password': password
+          }, function(msg) {
+            console.log(msg);
+          })
+        }
+        
+
+        var socket = io.connect('ws://127.0.0.1:3000');
+
+        socket.on("message", function(obj) {
+            console.log(obj);
+        });
+
+      }       
+    </script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <input id="in-username" name="username"></input>
+    <input id="in-password" name="password"></input>
+    <button id='b-submit' type="submit">提交</button>
+  </body>
+</html>
